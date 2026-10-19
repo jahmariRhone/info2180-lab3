@@ -1,8 +1,11 @@
 document.addEventListener("DOMContentLoaded", function() {
     const squares = document.querySelectorAll("#board div");
-    const state = ["", "", "", "", "", "", "", "", ""];
     const statusDiv = document.getElementById("status");
+    const newGameBtn = document.querySelector(".btn");
+    const originalMessage = statusDiv.textContent;
+    const state = ["", "", "", "", "", "", "", "", ""];
     let currentPlayer = "X";
+
     const winningCombos = [
         [0, 1, 2], [3, 4, 5], [6, 7, 8],  // rows
         [0, 3, 6], [1, 4, 7], [2, 5, 8],  // columns
@@ -21,7 +24,12 @@ document.addEventListener("DOMContentLoaded", function() {
 
     squares.forEach(function(square, index) {
         square.classList.add("square");
+
         square.addEventListener("click", function() {
+            if (state[index] !== "" || checkWinner()) {
+                return;
+            }
+
             square.textContent = currentPlayer;
             square.classList.add(currentPlayer);
             state[index] = currentPlayer;
@@ -34,11 +42,26 @@ document.addEventListener("DOMContentLoaded", function() {
 
             currentPlayer = currentPlayer === "X" ? "O" : "X";
         });
+
         square.addEventListener("mouseover", function() {
             square.classList.add("hover");
         });
+
         square.addEventListener("mouseout", function() {
             square.classList.remove("hover");
         });
+    });
+
+    newGameBtn.addEventListener("click", function() {
+        squares.forEach(function(square) {
+            square.textContent = "";
+            square.classList.remove("X", "O");
+        });
+
+        state.fill("");
+        currentPlayer = "X";
+
+        statusDiv.textContent = originalMessage;
+        statusDiv.classList.remove("you-won");
     });
 });
